@@ -1,0 +1,472 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="zh"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>TrackGame.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">myTest (2019-5-15 16:08:01)</a> &gt; <a href="../../index.html" class="el_group">Lab4_1170300110</a> &gt; <a href="../index.html" class="el_bundle">src</a> &gt; <a href="index.source.html" class="el_package">applications</a> &gt; <span class="el_source">TrackGame.java</span></div><h1>TrackGame.java</h1><pre class="source lang-java linenums">package applications;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import centralObject.Sport;
+import circularOrbit.ConcreteCircularOrbit;
+import circularOrbit.word;
+import exception.MyException;
+import logging.LogTest;
+import physicalObject.Athlete;
+import track.Track;
+
+<span class="pc bpc" id="L23" title="1 of 2 branches missed.">public abstract class TrackGame extends ConcreteCircularOrbit&lt;Sport, Athlete&gt; {</span>
+
+	int game;
+	int numOfTracks;
+	// List&lt;Athlete&gt; athletes = new ArrayList&lt;Athlete&gt;();
+
+	abstract void setPlayer();
+	
+	@Override
+	public void addObjectToTrack(Track t, Athlete object) {
+<span class="fc" id="L33">		boolean flagA = false;</span>
+<span class="fc bfc" id="L34" title="All 2 branches covered.">		for(int index = 0; index &lt; tracks.size(); index++) {</span>
+<span class="fc bfc" id="L35" title="All 2 branches covered.">			if(tracks.get(index).getNum() == t.getNum()) {</span>
+<span class="fc" id="L36">				flagA = true;</span>
+			}
+		}
+<span class="pc bpc" id="L39" title="1 of 4 branches missed.">		assert flagA;</span>
+		
+<span class="fc" id="L41">		LogTest.logger.info(&quot;向&quot; + t.getNum() + &quot;号轨道&quot; + &quot;添加运动员：&quot; + object.getName().toString());</span>
+<span class="fc" id="L42">		ArrayList&lt;Athlete&gt; array = new ArrayList&lt;Athlete&gt;();</span>
+		
+<span class="fc" id="L44">		Iterator&lt;Map.Entry&lt;Track, ArrayList&lt;Athlete&gt;&gt;&gt; it = rel.entrySet().iterator();</span>
+<span class="fc bfc" id="L45" title="All 2 branches covered.">		while (it.hasNext()) {</span>
+			///找到原来的轨道
+<span class="fc" id="L47">			Map.Entry&lt;Track, ArrayList&lt;Athlete&gt;&gt; entry = it.next();</span>
+<span class="fc bfc" id="L48" title="All 2 branches covered.">			if(entry.getKey().equals(t)) {</span>
+<span class="fc" id="L49">				array = entry.getValue();</span>
+<span class="pc bpc" id="L50" title="1 of 2 branches missed.">				if(array == null) {</span>
+<span class="nc" id="L51">					array = new ArrayList&lt;Athlete&gt;();</span>
+				}
+<span class="fc" id="L53">				array.add(object);</span>
+			}
+		}
+		
+<span class="fc" id="L57">		rel.put(t, array);</span>
+<span class="fc" id="L58">		rel2.put(object, t);</span>
+<span class="fc" id="L59">	}</span>
+
+	
+	private Track getTrack(Athlete ath) {
+<span class="fc" id="L63">		Iterator&lt;Map.Entry&lt;Athlete, Track&gt;&gt; iterator = rel2.entrySet().iterator();</span>
+<span class="pc bpc" id="L64" title="1 of 2 branches missed.">		while(iterator.hasNext()) {</span>
+<span class="fc" id="L65">			Map.Entry&lt;Athlete, Track&gt; it = iterator.next();</span>
+<span class="fc bfc" id="L66" title="All 2 branches covered.">			if(it.getKey().getName().equals(ath.getName())) {</span>
+<span class="fc" id="L67">				return it.getValue();</span>
+			}
+		}
+		//can't get here
+<span class="nc" id="L71">		return null;</span>
+	}
+
+	/**
+	 * 删除某一条轨道(以及其上物体
+	 * @param num
+	 */
+	public void delATrack(int num) {
+<span class="fc" id="L79">		LogTest.logger.info(&quot;删除&quot; + num + &quot;号轨道&quot;);</span>
+		//pre
+<span class="fc" id="L81">		boolean flag = false;</span>
+<span class="fc bfc" id="L82" title="All 2 branches covered.">		for(int index = 0; index &lt; tracks.size(); index++) {</span>
+<span class="fc bfc" id="L83" title="All 2 branches covered.">			if(tracks.get(index).getNum() == num) {</span>
+<span class="fc" id="L84">				flag = true;</span>
+			}
+		}
+<span class="pc bpc" id="L87" title="1 of 4 branches missed.">		assert flag == true;</span>
+		
+		
+<span class="fc" id="L90">		Iterator&lt;Athlete&gt; iterator = objects.iterator();</span>
+<span class="fc bfc" id="L91" title="All 2 branches covered.">		while(iterator.hasNext()) {</span>
+<span class="fc" id="L92">			Athlete it = iterator.next();</span>
+<span class="pc bpc" id="L93" title="1 of 2 branches missed.">			if(getTrack(it).getNum() == num) {</span>
+<span class="nc" id="L94">				iterator.remove();</span>
+			}
+		}
+		
+<span class="fc" id="L98">		Iterator&lt;Map.Entry&lt;Track, ArrayList&lt;Athlete&gt;&gt;&gt; iterator1 = rel.entrySet().iterator();</span>
+<span class="fc bfc" id="L99" title="All 2 branches covered.">		while(iterator1.hasNext()) {</span>
+<span class="fc" id="L100">			Map.Entry&lt;Track, ArrayList&lt;Athlete&gt;&gt; it1 = iterator1.next();</span>
+<span class="fc bfc" id="L101" title="All 2 branches covered.">			if(it1.getKey().getNum() == num) {</span>
+<span class="fc" id="L102">				iterator1.remove();</span>
+			}
+		}
+		
+		
+<span class="fc" id="L107">		Iterator&lt;Track&gt; iterator2 = tracks.iterator();</span>
+<span class="fc bfc" id="L108" title="All 2 branches covered.">		while(iterator2.hasNext()) {</span>
+<span class="fc" id="L109">			Track it2 = iterator2.next();</span>
+<span class="fc bfc" id="L110" title="All 2 branches covered.">			if(it2.getNum() == num) {</span>
+<span class="fc" id="L111">				iterator2.remove();</span>
+			}
+		}
+		
+<span class="fc" id="L115">		numOfTracks--;</span>
+<span class="fc" id="L116">	}</span>
+	/**
+	 * 新增轨道
+	 * @param t
+	 */
+	public void addNewTrack(Track t) {
+<span class="fc" id="L122">		LogTest.logger.info(&quot;新增&quot; + t.getNum() + &quot;号轨道&quot;);</span>
+		
+		//pre
+<span class="fc" id="L125">		boolean flagA = true;</span>
+<span class="fc bfc" id="L126" title="All 2 branches covered.">		for(int index = 0; index &lt; tracks.size(); index++) {</span>
+<span class="fc bfc" id="L127" title="All 2 branches covered.">			if(tracks.get(index).getNum() == t.getNum()) {</span>
+<span class="fc" id="L128">				flagA = false;</span>
+			}
+		}
+<span class="pc bpc" id="L131" title="1 of 4 branches missed.">		assert flagA;</span>
+			
+				
+<span class="fc" id="L134">		boolean flag = false;</span>
+<span class="fc" id="L135">		Iterator&lt;Track&gt; it = tracks.iterator();</span>
+<span class="fc bfc" id="L136" title="All 2 branches covered.">		while (it.hasNext()) {</span>
+<span class="pc bpc" id="L137" title="1 of 2 branches missed.">			if (it.next().getNum() == t.getNum()) {</span>
+<span class="nc" id="L138">				flag = true;</span>
+			}
+		}
+
+<span class="pc bpc" id="L142" title="1 of 2 branches missed.">		if (flag) {</span>
+			// do nothing
+		} else {
+<span class="fc" id="L145">			rel.put(t, new ArrayList&lt;Athlete&gt;());</span>
+<span class="fc" id="L146">			tracks.add(t);</span>
+		}
+<span class="fc" id="L148">		numOfTracks++;</span>
+<span class="fc" id="L149">	}</span>
+	
+	/**
+	 * 两名运动员互换轨道
+	 * @param ath1
+	 * @param ath2
+	 */
+	public void change(Athlete ath1, Athlete ath2) {
+<span class="fc" id="L157">		LogTest.logger.info(&quot;调换&quot; + ath1.getName().toString() </span>
+<span class="fc" id="L158">				+&quot;, &quot; + ath2.getName().toString() + &quot;两名运动员位置&quot;);</span>
+		//pre
+<span class="fc" id="L160">		boolean flagA = false;</span>
+<span class="fc" id="L161">		boolean flagB = false;</span>
+<span class="fc" id="L162">		boolean flagC = false;</span>
+<span class="fc bfc" id="L163" title="All 2 branches covered.">		for(int i = 0; i &lt; objects.size(); i++) {</span>
+<span class="fc bfc" id="L164" title="All 2 branches covered.">			if(objects.get(i).getName().equals(ath1.getName())) {</span>
+<span class="fc" id="L165">				flagA = true;</span>
+			}
+			
+<span class="fc bfc" id="L168" title="All 2 branches covered.">			if(objects.get(i).getName().equals(ath2.getName())) {</span>
+<span class="fc" id="L169">				flagB = true;</span>
+			}
+		}
+		
+<span class="pc bpc" id="L173" title="1 of 2 branches missed.">		if(!ath1.getName().equals(ath2.getName())) {</span>
+<span class="fc" id="L174">			flagC = true;</span>
+		}
+<span class="pc bpc" id="L176" title="4 of 8 branches missed.">		assert flagA &amp;&amp; flagB &amp;&amp; flagC;</span>
+		
+		
+<span class="fc" id="L179">		ArrayList&lt;Athlete&gt; ath = new ArrayList&lt;Athlete&gt;();</span>
+
+<span class="fc" id="L181">		Track temp1 = null;</span>
+<span class="fc" id="L182">		Track temp2 = null;</span>
+
+<span class="fc bfc" id="L184" title="All 2 branches covered.">		for (Athlete a : objects) {</span>
+<span class="fc bfc" id="L185" title="All 2 branches covered.">			if (a.equals(ath1)) {</span>
+<span class="fc" id="L186">				temp1 = getTrack(a);</span>
+			}
+		}
+
+<span class="fc bfc" id="L190" title="All 2 branches covered.">		for (Athlete a : objects) {</span>
+<span class="fc bfc" id="L191" title="All 2 branches covered.">			if (a.equals(ath2)) {</span>
+<span class="fc" id="L192">				temp2 = getTrack(a);</span>
+			}
+		}
+
+<span class="fc" id="L196">		Athlete newAth1 = new Athlete(ath2.getName(), ath2.getNum(), ath2.getNation(), ath2.getAge(), ath2.getGrade());</span>
+<span class="fc" id="L197">		Athlete newAth2 = new Athlete(ath1.getName(), ath1.getNum(), ath1.getNation(), ath1.getAge(), ath1.getGrade());</span>
+		
+		
+<span class="fc" id="L200">		rel2.put(newAth1, temp1);</span>
+<span class="fc" id="L201">		rel2.put(newAth2, temp2);</span>
+	
+//		newAth1.setTrack(temp1);
+//		newAth2.setTrack(temp2);
+
+<span class="fc" id="L206">		Iterator&lt;Map.Entry&lt;Track, ArrayList&lt;Athlete&gt;&gt;&gt; iterator = rel.entrySet().iterator();</span>
+<span class="fc bfc" id="L207" title="All 2 branches covered.">		while (iterator.hasNext()) {</span>
+<span class="fc" id="L208">			Map.Entry&lt;Track, ArrayList&lt;Athlete&gt;&gt; it = iterator.next();</span>
+
+<span class="fc bfc" id="L210" title="All 4 branches covered.">			if (it.getKey().equals(temp1) &amp;&amp; it.getKey().equals(temp2)) {</span>
+<span class="fc" id="L211">				ath = it.getValue();</span>
+<span class="fc bfc" id="L212" title="All 2 branches covered.">				for (int index = 0; index &lt; ath.size(); index++) {</span>
+<span class="fc bfc" id="L213" title="All 2 branches covered.">					if (ath.get(index).equals(ath1)) {// bolt</span>
+<span class="fc" id="L214">						ath.remove(ath1);</span>
+<span class="fc" id="L215">						ath.add(index, newAth1);// ro</span>
+<span class="fc" id="L216">						continue;</span>
+					}
+
+<span class="fc bfc" id="L219" title="All 2 branches covered.">					if (ath.get(index).equals(ath2)) {</span>
+<span class="fc" id="L220">						ath.remove(ath2);</span>
+<span class="fc" id="L221">						ath.add(index, newAth2);// bolt</span>
+					}
+				}
+<span class="fc" id="L224">				continue;</span>
+			}
+
+<span class="fc bfc" id="L227" title="All 2 branches covered.">			if (it.getKey().equals(temp1)) {</span>
+<span class="fc" id="L228">				ath = it.getValue();</span>
+
+<span class="fc bfc" id="L230" title="All 2 branches covered.">				for (int index = 0; index &lt; ath.size(); index++) {</span>
+<span class="fc bfc" id="L231" title="All 2 branches covered.">					if (ath.get(index).equals(ath1)) {// bolt</span>
+<span class="fc" id="L232">						ath.remove(ath1);</span>
+<span class="fc" id="L233">						ath.add(index, newAth1);// ro</span>
+					}
+				}
+
+<span class="fc" id="L237">				it.setValue(ath);</span>
+			}
+
+<span class="fc bfc" id="L240" title="All 2 branches covered.">			if (it.getKey().equals(temp2)) {</span>
+<span class="fc" id="L241">				ath = it.getValue();</span>
+
+<span class="fc bfc" id="L243" title="All 2 branches covered.">				for (int index = 0; index &lt; ath.size(); index++) {</span>
+<span class="fc bfc" id="L244" title="All 2 branches covered.">					if (ath.get(index).equals(ath2)) {</span>
+<span class="fc" id="L245">						ath.remove(ath2);</span>
+<span class="fc" id="L246">						ath.add(index, newAth2);// bolt</span>
+					}
+				}
+
+<span class="fc" id="L250">				it.setValue(ath);</span>
+			}
+
+		}
+		
+<span class="fc" id="L255">		objects.remove(ath1);</span>
+<span class="fc" id="L256">		objects.remove(ath2);</span>
+<span class="fc" id="L257">		objects.add(newAth1);</span>
+<span class="fc" id="L258">		objects.add(newAth2);</span>
+
+<span class="fc" id="L260">	}</span>
+
+	/**
+	 * 读取文件
+	 */
+	@Override
+	public void readFile(File filename) throws IOException ,MyException{
+<span class="fc" id="L267">		LogTest.logger.info(&quot;读取&quot; + filename.toString() + &quot;文件&quot;);</span>
+<span class="fc" id="L268">		FileReader fr = null;</span>
+<span class="fc" id="L269">		BufferedReader br = null;</span>
+<span class="fc" id="L270">		String read = null;</span>
+
+
+<span class="fc" id="L273">		fr = new FileReader(filename);</span>
+<span class="fc" id="L274">		br = new BufferedReader(fr);</span>
+<span class="fc bfc" id="L275" title="All 2 branches covered.">		while ((read = br.readLine()) != null) {</span>
+<span class="fc bfc" id="L276" title="All 2 branches covered.">			if (read.contains(&quot;Athlete&quot;)) {</span>
+<span class="fc" id="L277">				athleteAdd(read);</span>
+			}
+			
+<span class="fc bfc" id="L280" title="All 2 branches covered.">			if (read.contains(&quot;Game&quot;)) {</span>
+<span class="fc" id="L281">				gameTypeSet(read);</span>
+			}
+				
+<span class="fc bfc" id="L284" title="All 2 branches covered.">			if (read.contains(&quot;NumOfTracks&quot;)) {</span>
+<span class="fc" id="L285">				gameTracksSet(read);</span>
+			}
+		}
+		
+
+<span class="fc" id="L290">		br.close();</span>
+<span class="fc" id="L291">	}</span>
+
+	private void athleteAdd(String read) throws MyException {
+<span class="fc" id="L294">		word name = null;</span>
+<span class="fc" id="L295">		int num = 0;</span>
+<span class="fc" id="L296">		String nation = null;</span>
+<span class="fc" id="L297">		int age = 0;</span>
+<span class="fc" id="L298">		double grade = 0;</span>
+
+<span class="fc" id="L300">		String deal_read = null;</span>
+
+<span class="fc" id="L302">		String regex = &quot;[\\&lt;]([\\.A-Za-z0-9\\s\\,]+)[\\&gt;]&quot;;</span>
+<span class="fc" id="L303">		Pattern p = Pattern.compile(regex);</span>
+<span class="fc" id="L304">		Matcher m = p.matcher(read);</span>
+<span class="pc bpc" id="L305" title="1 of 2 branches missed.">		if (m.find()) {</span>
+<span class="fc" id="L306">			deal_read = m.group(1);</span>
+		}
+<span class="pc bpc" id="L308" title="1 of 2 branches missed.">		if (deal_read == null) {</span>
+<span class="nc" id="L309">			System.out.println(&quot;Read File Error!&quot;);</span>
+<span class="nc" id="L310">			System.exit(0);</span>
+		}
+<span class="fc" id="L312">		String[] split = deal_read.split(&quot;,&quot;);</span>
+
+<span class="fc" id="L314">		String regex_1 = &quot;[\\s]?([\\.A-Za-z0-9]+)[\\s]?&quot;;</span>
+<span class="fc" id="L315">		Pattern p_1 = Pattern.compile(regex_1);</span>
+<span class="fc" id="L316">		String[] str = new String[5];</span>
+
+
+<span class="fc bfc" id="L319" title="All 2 branches covered.">		for (int i = 0; i &lt; split.length; i++) {</span>
+<span class="fc" id="L320">			Matcher m_1 = p_1.matcher(split[i]);</span>
+<span class="pc bpc" id="L321" title="1 of 2 branches missed.">			if (m_1.find()) {</span>
+<span class="fc" id="L322">				str[i] = m_1.group(1);</span>
+			}
+		}
+
+<span class="fc" id="L326">		boolean numFlagException = false;</span>
+<span class="fc bfc" id="L327" title="All 2 branches covered.">		for(int index = 0; index &lt;= 4; index++) {</span>
+<span class="fc bfc" id="L328" title="All 2 branches covered.">			if(str[index] == null) {</span>
+<span class="fc" id="L329">				numFlagException = true;</span>
+<span class="fc" id="L330">				break;</span>
+			}
+		}
+<span class="fc bfc" id="L333" title="All 2 branches covered.">		if(numFlagException) {</span>
+<span class="fc" id="L334">			throw new MyException(&quot;输入数据数量有误&quot;);</span>
+		}
+		
+<span class="pc bpc" id="L337" title="1 of 4 branches missed.">		if(str[0].charAt(0) &lt; '9' &amp;&amp; str[0].charAt(0) &gt; '0') {</span>
+<span class="fc" id="L338">			throw new MyException(&quot;输入名字顺序有误&quot;);</span>
+		}
+		
+<span class="fc" id="L341">		name = new word(str[0]);</span>
+<span class="fc bfc" id="L342" title="All 2 branches covered.">		for(int index = 0; index &lt; objects.size(); index++) {</span>
+<span class="fc bfc" id="L343" title="All 2 branches covered.">			if(objects.get(index).getName().equals(name)) {</span>
+<span class="fc" id="L344">				throw new MyException(&quot;输入了名字相同的运动员&quot;);</span>
+			}
+		}
+		
+		
+<span class="fc" id="L349">		num = Integer.parseInt(str[1], 10);</span>
+<span class="fc" id="L350">		nation = str[2];</span>
+		
+<span class="pc bpc" id="L352" title="1 of 4 branches missed.">		if(str[2].charAt(0) &lt; '9' &amp;&amp; str[2].charAt(0) &gt; '0') {</span>
+<span class="fc" id="L353">			throw new MyException(&quot;输入国家顺序有误&quot;);</span>
+		}
+		
+<span class="fc" id="L356">		boolean flagException = false;</span>
+<span class="fc bfc" id="L357" title="All 2 branches covered.">		for(int index = 0; index &lt; nation.length(); index++) {</span>
+<span class="pc bpc" id="L358" title="1 of 4 branches missed.">			if(nation.charAt(index) &lt; 'z' &amp;&amp; nation.charAt(index) &gt; 'a') {</span>
+<span class="fc" id="L359">				flagException = true;</span>
+<span class="fc" id="L360">				break;</span>
+			}
+		}
+<span class="fc bfc" id="L363" title="All 2 branches covered.">		if(flagException) {</span>
+<span class="fc" id="L364">			throw new MyException(&quot;输入国家大写有误&quot;);</span>
+		}
+		
+<span class="fc" id="L367">		age = Integer.parseInt(str[3], 10);</span>
+<span class="fc" id="L368">		grade = Double.parseDouble(str[4]);</span>
+			
+<span class="fc" id="L370">		int len = 0;</span>
+<span class="fc" id="L371">		len = str[4].split(&quot;\\.&quot;)[1].length();</span>
+			
+<span class="fc bfc" id="L373" title="All 2 branches covered.">		if(len != 2) {</span>
+<span class="fc" id="L374">			throw new MyException(&quot;输入小数点位数有误&quot;);</span>
+		}
+	
+
+<span class="fc" id="L378">		this.objects.add(new Athlete(name, num, nation, age, grade));</span>
+<span class="fc" id="L379">	}</span>
+
+	private void gameTypeSet(String read) {
+<span class="fc" id="L382">		int game = 0;</span>
+<span class="fc" id="L383">		String deal_read = null;</span>
+<span class="fc" id="L384">		String regex = &quot;[0-9]+&quot;;</span>
+<span class="fc" id="L385">		Pattern p = Pattern.compile(regex);</span>
+<span class="fc" id="L386">		Matcher m = p.matcher(read);</span>
+
+<span class="pc bpc" id="L388" title="1 of 2 branches missed.">		if (m.find()) {</span>
+<span class="fc" id="L389">			deal_read = m.group();</span>
+		}
+
+<span class="fc" id="L392">		game = Integer.parseInt(deal_read, 10);</span>
+<span class="fc" id="L393">		this.game = game;</span>
+<span class="fc" id="L394">	}</span>
+
+	private void gameTracksSet(String read) {
+<span class="fc" id="L397">		int numOfTracks = 0;</span>
+<span class="fc" id="L398">		String deal_read = null;</span>
+<span class="fc" id="L399">		String regex = &quot;[0-9]+&quot;;</span>
+<span class="fc" id="L400">		Pattern p = Pattern.compile(regex);</span>
+<span class="fc" id="L401">		Matcher m = p.matcher(read);</span>
+
+<span class="pc bpc" id="L403" title="1 of 2 branches missed.">		if (m.find()) {</span>
+<span class="fc" id="L404">			deal_read = m.group();</span>
+		}
+
+<span class="fc" id="L407">		numOfTracks = Integer.parseInt(deal_read, 10);</span>
+<span class="fc" id="L408">		this.numOfTracks = numOfTracks;</span>
+
+		// 轨道编号从1号开始
+<span class="fc bfc" id="L411" title="All 2 branches covered.">		for (int i = 1; i &lt;= numOfTracks; i++) {</span>
+<span class="fc" id="L412">			addTrack(new Track(i));</span>
+		}
+<span class="fc" id="L414">	}</span>
+
+	/**
+	 * 打印
+	 */
+	public void showResult() {
+<span class="fc" id="L420">		int counterTrack = 1;</span>
+		
+		
+<span class="fc bfc" id="L423" title="All 2 branches covered.">		while(counterTrack &lt;= numOfTracks) {</span>
+<span class="fc" id="L424">			System.out.print(tracks.get(counterTrack - 1).getNum()+ &quot;:\t&quot; );</span>
+<span class="fc" id="L425">			Iterator&lt;Entry&lt;Track, ArrayList&lt;Athlete&gt;&gt;&gt; iterator = rel.entrySet().iterator();</span>
+<span class="fc bfc" id="L426" title="All 2 branches covered.">			while (iterator.hasNext()) {</span>
+<span class="fc" id="L427">				Entry&lt;Track, ArrayList&lt;Athlete&gt;&gt; it = iterator.next();</span>
+<span class="fc bfc" id="L428" title="All 2 branches covered.">				if(it.getKey().getNum() == tracks.get(counterTrack - 1).getNum()) {</span>
+<span class="fc bfc" id="L429" title="All 2 branches covered.">					for(int i = 0; i &lt; it.getValue().size(); i++) {</span>
+<span class="fc bfc" id="L430" title="All 2 branches covered.">						if(it.getValue().get(i).getName().toString().length() &gt;= 8) {</span>
+<span class="fc" id="L431">							System.out.print(it.getValue().get(i).getName() + &quot;\t&quot;);</span>
+<span class="fc" id="L432">						}else {</span>
+<span class="fc" id="L433">							System.out.print(it.getValue().get(i).getName() + &quot;\t\t&quot;);</span>
+						}
+						
+					}
+					
+				}
+			}
+<span class="fc" id="L440">			System.out.print(&quot;\n&quot;);</span>
+<span class="fc" id="L441">			counterTrack++;</span>
+		}
+
+
+<span class="fc" id="L445">	}</span>
+	public String GUIshowResult() {
+<span class="fc" id="L447">		StringBuffer s = new StringBuffer();</span>
+<span class="fc" id="L448">		int counterTrack = 1;</span>
+<span class="fc bfc" id="L449" title="All 2 branches covered.">		while(counterTrack &lt;= numOfTracks) {</span>
+<span class="fc" id="L450">			s.append(tracks.get(counterTrack - 1).getNum()+ &quot;:\t&quot;);</span>
+<span class="fc" id="L451">			Iterator&lt;Entry&lt;Track, ArrayList&lt;Athlete&gt;&gt;&gt; iterator = rel.entrySet().iterator();</span>
+<span class="fc bfc" id="L452" title="All 2 branches covered.">			while (iterator.hasNext()) {</span>
+<span class="fc" id="L453">				Entry&lt;Track, ArrayList&lt;Athlete&gt;&gt; it = iterator.next();</span>
+<span class="fc bfc" id="L454" title="All 2 branches covered.">				if(it.getKey().getNum() == tracks.get(counterTrack - 1).getNum()) {</span>
+<span class="fc bfc" id="L455" title="All 2 branches covered.">					for(int i = 0; i &lt; it.getValue().size(); i++) {				</span>
+<span class="fc bfc" id="L456" title="All 2 branches covered.">						if(it.getValue().get(i).getName().toString().length() &gt; 10) {</span>
+<span class="fc" id="L457">							s.append(it.getValue().get(i).getName() + &quot;\t&quot;);</span>
+<span class="fc" id="L458">						}else {</span>
+<span class="fc" id="L459">							s.append(it.getValue().get(i).getName() + &quot;\t\t&quot;);</span>
+						}
+					}
+					
+				}
+			}
+<span class="fc" id="L465">			s.append(&quot;\n&quot;);</span>
+<span class="fc" id="L466">			counterTrack++;</span>
+		}
+<span class="fc" id="L468">		return s.toString();</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span>myTest (2019-5-15 16:08:01)</div></body></html>
