@@ -1,5 +1,5 @@
-package centralObject;
+package centralobject;
 
 public class Sport {
-	//need to do nothing!
+  // need to do nothing!
 }
