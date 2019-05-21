@@ -1,0 +1,686 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="zh"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>SocialNetworkCircle.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">myTest (2019-5-15 16:08:01)</a> &gt; <a href="../../index.html" class="el_group">Lab4_1170300110</a> &gt; <a href="../index.html" class="el_bundle">src</a> &gt; <a href="index.source.html" class="el_package">applications</a> &gt; <span class="el_source">SocialNetworkCircle.java</span></div><h1>SocialNetworkCircle.java</h1><pre class="source lang-java linenums">package applications;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import APIs.CircularOrbitAPIs;
+import centralObject.Person;
+import circularOrbit.ConcreteCircularOrbit;
+import circularOrbit.label;
+import exception.MyException;
+import logging.LogTest;
+import physicalObject.People;
+import track.Track;
+
+<span class="pc bpc" id="L24" title="1 of 2 branches missed.">public class SocialNetworkCircle extends ConcreteCircularOrbit&lt;Person, People&gt; {</span>
+
+	public double[][] distance;
+<span class="fc" id="L27">	public List&lt;SocialNetworkCircleTie&gt; ties = new ArrayList&lt;SocialNetworkCircleTie&gt;();</span>
+<span class="fc" id="L28">	public List&lt;People&gt; removeObjects = new ArrayList&lt;People&gt;();</span>
+	public int numOfTracks;
+
+	
+	
+	public void addAPeople(label name, int age, char gender) {
+<span class="fc" id="L34">		LogTest.logger.info(&quot;增加&quot; + name.toString());</span>
+		//pre
+<span class="fc" id="L36">		boolean flag = true;</span>
+<span class="fc bfc" id="L37" title="All 2 branches covered.">		for(int i = 0; i &lt; objects.size(); i++) {</span>
+<span class="pc bpc" id="L38" title="1 of 2 branches missed.">			if(objects.get(i).getName().equals(name)) {</span>
+<span class="nc" id="L39">				flag = false;</span>
+			}
+		}
+		
+<span class="fc bfc" id="L43" title="All 2 branches covered.">		for(int i = 0; i &lt; removeObjects.size(); i++) {</span>
+<span class="pc bpc" id="L44" title="1 of 2 branches missed.">			if(removeObjects.get(i).getName().equals(name)) {</span>
+<span class="nc" id="L45">				flag = false;</span>
+			}
+		}
+<span class="pc bpc" id="L48" title="2 of 4 branches missed.">		assert flag;</span>
+		
+		
+<span class="fc bfc" id="L51" title="All 2 branches covered.">		for (int i = 0; i &lt; removeObjects.size(); i++) {</span>
+<span class="pc bpc" id="L52" title="1 of 2 branches missed.">			if (!objects.contains(removeObjects.get(i))) {</span>
+<span class="fc" id="L53">				objects.add(removeObjects.get(i));</span>
+			} else {
+				// do nothing
+			}
+		}
+
+<span class="fc" id="L59">		People p = new People(central.getName(), central.getAge(), central.getGender());</span>
+<span class="fc" id="L60">		objects.add(p);</span>
+<span class="fc" id="L61">		People p1 = new People(name, age, gender);</span>
+<span class="fc" id="L62">		objects.add(p1);</span>
+<span class="fc" id="L63">		distance = new double[objects.size() + removeObjects.size() + 1][objects.size() + removeObjects.size() + 1];</span>
+<span class="fc" id="L64">		cleanDistance();</span>
+<span class="fc" id="L65">		rel.clear();</span>
+<span class="fc" id="L66">		tracks.clear();</span>
+<span class="fc" id="L67">		relation.clear();</span>
+<span class="fc" id="L68">		buildSystem();</span>
+<span class="fc" id="L69">	}</span>
+
+	public int getDistance(label name1, label name2) {
+<span class="fc" id="L72">		LogTest.logger.info(&quot;计算&quot; + name1.toString() + &quot;, &quot; + name2.toString() + &quot;距离&quot;);</span>
+		//pre
+<span class="fc" id="L74">		boolean flagA = false;</span>
+<span class="fc" id="L75">		boolean flagB = false;</span>
+<span class="fc" id="L76">		boolean flagC = false;</span>
+<span class="fc bfc" id="L77" title="All 2 branches covered.">		for(int i = 0; i &lt; objects.size(); i++) {</span>
+<span class="fc bfc" id="L78" title="All 2 branches covered.">			if(objects.get(i).getName().equals(name1)) {</span>
+<span class="fc" id="L79">				flagA = true;</span>
+			}
+<span class="fc bfc" id="L81" title="All 2 branches covered.">			if(objects.get(i).getName().equals(name2)) {</span>
+<span class="fc" id="L82">				flagB = true;</span>
+			}
+		}
+<span class="pc bpc" id="L85" title="1 of 2 branches missed.">		if(!name1.equals(name2)) {</span>
+<span class="fc" id="L86">			flagC = true;</span>
+		}
+		
+<span class="pc bpc" id="L89" title="3 of 8 branches missed.">		assert flagA &amp;&amp; flagB &amp;&amp; flagC;</span>
+		
+<span class="fc" id="L91">		CircularOrbitAPIs&lt;Person, People&gt; api = new CircularOrbitAPIs&lt;Person, People&gt;();</span>
+<span class="fc" id="L92">		People e1 = getCertainFriend(name1);</span>
+<span class="fc" id="L93">		People e2 = getCertainFriend(name2);</span>
+<span class="fc" id="L94">		int n = api.getLogicalDistance(this, e1, e2);</span>
+<span class="fc" id="L95">		return n;</span>
+	}
+
+	private People getCertainFriend(label str) {
+<span class="pc bpc" id="L99" title="1 of 2 branches missed.">		for (int i = 0; i &lt; objects.size(); i++) {</span>
+<span class="fc bfc" id="L100" title="All 2 branches covered.">			if (objects.get(i).getName().equals(str)) {</span>
+<span class="fc" id="L101">				return objects.get(i);</span>
+			}
+		}
+<span class="nc" id="L104">		return null;</span>
+	}
+
+	/**
+	 * 增加一条关系后重构
+	 * 
+	 * @param name1 关系起始
+	 * @param name2 关系结束
+	 * @param close 亲密度
+	 */
+	public void addTie(label name1, label name2, double close) {
+<span class="fc" id="L115">		LogTest.logger.info(&quot;增加&quot; + name1.toString() + &quot;, &quot; + name2.toString() +  &quot;社会关系&quot;);</span>
+		//pre
+<span class="fc" id="L117">		boolean flagA = false;</span>
+<span class="fc" id="L118">		boolean flagB = false;</span>
+<span class="fc" id="L119">		boolean flagC = false;</span>
+<span class="fc bfc" id="L120" title="All 2 branches covered.">		for(int i = 0; i &lt; objects.size(); i++) {</span>
+<span class="fc bfc" id="L121" title="All 2 branches covered.">			if(objects.get(i).getName().equals(name1)) {</span>
+<span class="fc" id="L122">				flagA = true;</span>
+			}
+<span class="fc bfc" id="L124" title="All 2 branches covered.">			if(objects.get(i).getName().equals(name2)) {</span>
+<span class="fc" id="L125">				flagB = true;</span>
+			}
+		}
+<span class="fc bfc" id="L128" title="All 2 branches covered.">		for(int i = 0; i &lt; removeObjects.size(); i++) {</span>
+<span class="fc bfc" id="L129" title="All 2 branches covered.">			if(removeObjects.get(i).getName().equals(name1)) {</span>
+<span class="fc" id="L130">				flagA = true;</span>
+			}
+<span class="fc bfc" id="L132" title="All 2 branches covered.">			if(removeObjects.get(i).getName().equals(name2)) {</span>
+<span class="fc" id="L133">				flagB = true;</span>
+			}
+		}
+<span class="pc bpc" id="L136" title="1 of 2 branches missed.">		if(!name1.equals(name2)) {</span>
+<span class="fc" id="L137">			flagC = true;</span>
+		}
+<span class="pc bpc" id="L139" title="3 of 8 branches missed.">		assert flagA &amp;&amp; flagB &amp;&amp; flagC;</span>
+		
+<span class="fc bfc" id="L141" title="All 2 branches covered.">		for (int i = 0; i &lt; removeObjects.size(); i++) {</span>
+<span class="pc bpc" id="L142" title="1 of 2 branches missed.">			if (!objects.contains(removeObjects.get(i))) {</span>
+<span class="fc" id="L143">				objects.add(removeObjects.get(i));</span>
+			} else {
+				// do nothing
+			}
+		}
+<span class="fc" id="L148">		People p = new People(central.getName(), central.getAge(), central.getGender());</span>
+<span class="fc" id="L149">		objects.add(p);</span>
+<span class="fc" id="L150">		distance = new double[objects.size() + 1][objects.size() + 1];</span>
+<span class="fc" id="L151">		cleanDistance();</span>
+<span class="fc" id="L152">		rel.clear();</span>
+<span class="fc" id="L153">		tracks.clear();</span>
+<span class="fc" id="L154">		SocialNetworkCircleTie t = new SocialNetworkCircleTie(name1, name2, close);</span>
+<span class="fc" id="L155">		ties.add(t);</span>
+<span class="fc" id="L156">		relation.clear();</span>
+<span class="fc" id="L157">		buildSystem();</span>
+		// 向objects中加中间物体
+		// buildSystem
+<span class="fc" id="L160">	}</span>
+
+	/**
+	 * 删除一条关系后重构
+	 * 
+	 * @param name1 关系起始
+	 * @param name2 关系结束
+	 */
+	public void deleteTie(label name1, label name2) {
+
+<span class="fc" id="L170">		LogTest.logger.info(&quot;删除&quot; + name1.toString() + &quot;, &quot; + name2.toString() +  &quot;社会关系&quot;);</span>
+<span class="fc" id="L171">		boolean flagA = false;</span>
+<span class="fc" id="L172">		boolean flagB = false;</span>
+<span class="fc bfc" id="L173" title="All 2 branches covered.">		for(int i = 0; i &lt; ties.size(); i++) {</span>
+<span class="fc bfc" id="L174" title="All 4 branches covered.">			if(ties.get(i).getName1().equals(name1) &amp;&amp; ties.get(i).getName2().equals(name2)</span>
+<span class="pc bpc" id="L175" title="1 of 4 branches missed.">					|| ties.get(i).getName1().equals(name2) &amp;&amp; ties.get(i).getName2().equals(name1)) {</span>
+<span class="fc" id="L176">				flagA = true;</span>
+			}
+		}
+<span class="pc bpc" id="L179" title="1 of 2 branches missed.">		if(!name1.equals(name2)) {</span>
+<span class="fc" id="L180">			flagB = true;</span>
+		}
+<span class="pc bpc" id="L182" title="3 of 6 branches missed.">		assert flagA &amp;&amp; flagB;</span>
+		
+<span class="fc bfc" id="L184" title="All 2 branches covered.">		for (int i = 0; i &lt; removeObjects.size(); i++) {</span>
+<span class="pc bpc" id="L185" title="1 of 2 branches missed.">			if (!objects.contains(removeObjects.get(i))) {</span>
+<span class="fc" id="L186">				objects.add(removeObjects.get(i));</span>
+			} else {
+				// do nothing
+			}
+		}
+<span class="fc" id="L191">		People p = new People(central.getName(), central.getAge(), central.getGender());</span>
+<span class="fc" id="L192">		objects.add(p);</span>
+<span class="fc" id="L193">		distance = new double[objects.size() + 1][objects.size() + 1];</span>
+<span class="fc" id="L194">		cleanDistance();</span>
+<span class="fc" id="L195">		Iterator&lt;SocialNetworkCircleTie&gt; iterator = ties.iterator();</span>
+<span class="fc bfc" id="L196" title="All 2 branches covered.">		while (iterator.hasNext()) {</span>
+<span class="fc" id="L197">			SocialNetworkCircleTie it = iterator.next();</span>
+<span class="fc bfc" id="L198" title="All 4 branches covered.">			if (it.getName1().equals(name1) &amp;&amp; it.getName2().equals(name2)</span>
+<span class="pc bpc" id="L199" title="1 of 4 branches missed.">					|| it.getName1().equals(name2) &amp;&amp; it.getName2().equals(name1)) {</span>
+<span class="fc" id="L200">				iterator.remove();</span>
+			}
+		}
+<span class="fc" id="L203">		rel.clear();</span>
+<span class="fc" id="L204">		tracks.clear();</span>
+<span class="fc" id="L205">		relation.clear();</span>
+<span class="fc" id="L206">		rel2.clear();</span>
+<span class="fc" id="L207">		buildSystem();</span>
+
+		// 向objects中加中间物体
+		// 将二维数组那个位置设置为0
+		// buildSystem
+<span class="fc" id="L212">	}</span>
+
+	private void cleanDistance() {
+<span class="fc bfc" id="L215" title="All 2 branches covered.">		for (int i = 0; i &lt; objects.size(); i++) {</span>
+<span class="fc bfc" id="L216" title="All 2 branches covered.">			for (int j = 0; j &lt; objects.size(); j++) {</span>
+<span class="fc" id="L217">				distance[i][j] = 0;</span>
+			}
+		}
+<span class="fc" id="L220">	}</span>
+
+	/**
+	 * 计算信息扩散度
+	 * 
+	 * @param 提供一个位于第一个轨道上的人的名字
+	 * @return 信息扩散度 定义等于其链接的其他人的亲密度的平方和
+	 */
+	public double getCloseLevel(label name) {
+<span class="fc" id="L229">		LogTest.logger.info(&quot;计算&quot; + name.toString() + &quot;信息扩散度&quot;);</span>
+		//pre
+<span class="fc" id="L231">		boolean flag = false;</span>
+<span class="fc" id="L232">		Track t = null;</span>
+<span class="fc bfc" id="L233" title="All 2 branches covered.">		for(int i = 0; i &lt; tracks.size(); i++) {</span>
+<span class="fc bfc" id="L234" title="All 2 branches covered.">			if(tracks.get(i).getNum() == 1) {</span>
+<span class="fc" id="L235">				t = tracks.get(i);</span>
+			}
+		}
+<span class="fc bfc" id="L238" title="All 2 branches covered.">		for(int i = 0; i &lt; rel.get(t).size(); i++) {</span>
+<span class="fc bfc" id="L239" title="All 2 branches covered.">			if(rel.get(t).get(i).getName().equals(name)) {</span>
+<span class="fc" id="L240">				flag = true;</span>
+			}
+		}
+<span class="pc bpc" id="L243" title="2 of 4 branches missed.">		assert flag;</span>
+		
+		
+<span class="fc" id="L246">		int index = 0;</span>
+<span class="fc" id="L247">		int centralIndex = 0;</span>
+<span class="fc" id="L248">		double res = 0;</span>
+
+<span class="fc bfc" id="L250" title="All 2 branches covered.">		for (int i = 0; i &lt; objects.size(); i++) {</span>
+<span class="fc bfc" id="L251" title="All 2 branches covered.">			if (objects.get(i).getName().equals(name)) {</span>
+<span class="fc" id="L252">				index = i;</span>
+			}
+<span class="pc bpc" id="L254" title="1 of 2 branches missed.">			if (objects.get(i).getName().equals(central.getName())) {</span>
+<span class="nc" id="L255">				centralIndex = i;</span>
+			}
+		}
+
+<span class="fc bfc" id="L259" title="All 2 branches covered.">		for (int i = 0; i &lt; objects.size(); i++) {</span>
+<span class="fc bfc" id="L260" title="All 2 branches covered.">			if (i != centralIndex) {</span>
+<span class="fc bfc" id="L261" title="All 2 branches covered.">				if (distance[index][i] != 0) {</span>
+<span class="fc" id="L262">					res += Math.pow(distance[index][i], 2);</span>
+				}
+			} else {
+				// do nothing
+			}
+		}
+
+<span class="fc" id="L269">		return res;</span>
+	}
+
+	/**
+	 * 判定某人处于哪个轨道上
+	 * 
+	 * @param str 提供某个人的名字
+	 * @return
+	 */
+	public int getPeopleTrack(label str) {
+<span class="fc" id="L279">		Iterator&lt;Map.Entry&lt;Track, ArrayList&lt;People&gt;&gt;&gt; iterator = rel.entrySet().iterator();</span>
+<span class="fc bfc" id="L280" title="All 2 branches covered.">		while (iterator.hasNext()) {</span>
+<span class="fc" id="L281">			Map.Entry&lt;Track, ArrayList&lt;People&gt;&gt; it = iterator.next();</span>
+<span class="fc bfc" id="L282" title="All 2 branches covered.">			if (it.getValue().contains(new People(str, 0, 'F'))) {</span>
+<span class="fc" id="L283">				return it.getKey().getNum();</span>
+			}
+		}
+		// can't get here
+<span class="fc" id="L287">		return -1;</span>
+	}
+
+	/**
+	 * 读取文件
+	 */
+	@Override
+	public void readFile(File filename) throws IOException, MyException {
+<span class="fc" id="L295">		LogTest.logger.info(&quot;读取&quot; + filename.toString() + &quot;文件&quot;);</span>
+<span class="fc" id="L296">		FileReader fr = null;</span>
+<span class="fc" id="L297">		BufferedReader br = null;</span>
+<span class="fc" id="L298">		String read = null;</span>
+
+<span class="fc" id="L300">		fr = new FileReader(filename);</span>
+<span class="fc" id="L301">		br = new BufferedReader(fr);</span>
+<span class="fc bfc" id="L302" title="All 2 branches covered.">		while ((read = br.readLine()) != null) {</span>
+<span class="fc bfc" id="L303" title="All 2 branches covered.">			if (read.contains(&quot;CentralUser&quot;)) {</span>
+<span class="fc bfc" id="L304" title="All 2 branches covered.">				if (read.contains(&quot;.&quot;)) {</span>
+<span class="fc" id="L305">					throw new MyException(&quot;中心物体年龄不应该为小数形式&quot;);</span>
+				}
+<span class="fc" id="L307">				centralUserSet(read);</span>
+			}
+
+<span class="fc bfc" id="L310" title="All 2 branches covered.">			if (read.contains(&quot;SocialTie&quot;)) {</span>
+<span class="fc" id="L311">				socialTieSet(read);</span>
+			}
+
+<span class="fc bfc" id="L314" title="All 2 branches covered.">			if (read.contains(&quot;Friend&quot;)) {</span>
+<span class="pc bpc" id="L315" title="1 of 2 branches missed.">				if (read.contains(&quot;.&quot;)) {</span>
+<span class="nc" id="L316">					throw new MyException(&quot;轨道物体年龄不应该为小数形式&quot;);</span>
+				}
+<span class="fc" id="L318">				friendSet(read);</span>
+			}
+		}
+
+<span class="fc" id="L322">		br.close();</span>
+
+		// 初始化数组
+<span class="fc" id="L325">		distance = new double[objects.size() + 1][objects.size() + 1];</span>
+
+<span class="fc" id="L327">		buildSystem();</span>
+
+<span class="fc" id="L329">	}</span>
+
+	private void buildSystem() {
+
+<span class="fc bfc" id="L333" title="All 2 branches covered.">		for (int i = 0; i &lt; ties.size(); i++) {</span>
+<span class="fc" id="L334">			label name1 = ties.get(i).getName1();</span>
+<span class="fc" id="L335">			label name2 = ties.get(i).getName2();</span>
+
+<span class="fc" id="L337">			int index1 = getFriendIndex(name1);</span>
+<span class="fc" id="L338">			int index2 = getFriendIndex(name2);</span>
+
+<span class="fc" id="L340">			distance[index1][index2] = ties.get(i).getClose();</span>
+<span class="fc" id="L341">			distance[index2][index1] = ties.get(i).getClose();</span>
+		}
+
+		// 轨道编号
+<span class="fc" id="L345">		int[] trackNum = new int[objects.size() + 1];</span>
+		// 记录搜索历史
+<span class="fc" id="L347">		int[] objectNum = new int[objects.size() + 1];</span>
+
+		// 标记数组
+<span class="fc" id="L350">		boolean[] flag = new boolean[objects.size() + 1];</span>
+<span class="fc bfc" id="L351" title="All 2 branches covered.">		for (int i = 0; i &lt; flag.length; i++) {</span>
+<span class="fc" id="L352">			flag[i] = false;</span>
+		}
+
+<span class="fc" id="L355">		int[] que = new int[objects.size() + 1];</span>
+<span class="fc" id="L356">		int front = 0;</span>
+<span class="fc" id="L357">		int rear = 0;</span>
+
+<span class="fc" id="L359">		int index = getFriendIndex(central.getName());</span>
+<span class="fc" id="L360">		flag[index] = true;</span>
+<span class="fc" id="L361">		trackNum[rear] = 0;</span>
+<span class="fc" id="L362">		que[rear] = index;</span>
+<span class="fc" id="L363">		rear++;</span>
+
+<span class="fc bfc" id="L365" title="All 2 branches covered.">		while (front &lt; rear) {</span>
+<span class="fc" id="L366">			int start = que[front];</span>
+<span class="fc" id="L367">			objectNum[front] = start;</span>
+
+<span class="fc bfc" id="L369" title="All 2 branches covered.">			for (int i = 0; i &lt; objects.size(); i++) {</span>
+<span class="fc bfc" id="L370" title="All 4 branches covered.">				if (distance[start][i] != 0 &amp;&amp; flag[i] == false) {</span>
+<span class="fc" id="L371">					flag[i] = true;</span>
+<span class="fc" id="L372">					trackNum[rear] = trackNum[front] + 1;</span>
+<span class="fc" id="L373">					que[rear] = i;</span>
+<span class="fc" id="L374">					rear++;</span>
+				}
+			}
+<span class="fc" id="L377">			front++;</span>
+		}
+
+<span class="fc" id="L380">		int numOfTracks = trackNum[front - 1];</span>
+<span class="fc bfc" id="L381" title="All 2 branches covered.">		for (int i = 1; i &lt;= numOfTracks; i++) {</span>
+<span class="fc" id="L382">			addTrack(new Track(i));</span>
+		}
+
+<span class="fc bfc" id="L385" title="All 2 branches covered.">		for (int i = 1; i &lt;= front - 1; i++) {</span>
+<span class="fc" id="L386">			addObjectToTrack(getCertainTrack(trackNum[i]), objects.get(objectNum[i]));</span>
+		}
+
+<span class="fc" id="L389">		List&lt;People&gt; objectsNew = new ArrayList&lt;People&gt;();</span>
+<span class="fc" id="L390">		Iterator&lt;People&gt; it = objects.iterator();</span>
+<span class="fc" id="L391">		removeObjects.clear();</span>
+<span class="fc bfc" id="L392" title="All 2 branches covered.">		while (it.hasNext()) {</span>
+<span class="fc" id="L393">			People p = it.next();</span>
+<span class="fc bfc" id="L394" title="All 2 branches covered.">			if (flag[getFriendIndex(p.getName())] == false) {</span>
+<span class="fc" id="L395">				removeObjects.add(p);</span>
+<span class="fc" id="L396">			} else {</span>
+<span class="fc" id="L397">				objectsNew.add(p);</span>
+			}
+		}
+<span class="fc" id="L400">		objects = objectsNew;</span>
+
+<span class="fc" id="L402">		People p = new People(central.getName(), central.getAge(), central.getGender());</span>
+<span class="fc" id="L403">		objects.remove(p);</span>
+<span class="fc" id="L404">		setRelation();</span>
+
+<span class="fc" id="L406">		this.numOfTracks = tracks.size();</span>
+<span class="fc" id="L407">	}</span>
+
+	private int getFriendIndex(label name) {
+<span class="pc bpc" id="L410" title="1 of 2 branches missed.">		for (int i = 0; i &lt; objects.size(); i++) {</span>
+<span class="fc bfc" id="L411" title="All 2 branches covered.">			if (objects.get(i).getName().equals(name)) {</span>
+<span class="fc" id="L412">				return i;</span>
+			}
+		}
+<span class="nc" id="L415">		return -1;</span>
+		// can't get here
+	}
+
+	private void centralUserSet(String str) throws MyException {
+<span class="fc" id="L420">		char gender = 'F';</span>
+<span class="fc" id="L421">		label name = null;</span>
+<span class="fc" id="L422">		int age = 0;</span>
+<span class="fc" id="L423">		String deal_read = null;</span>
+
+<span class="fc" id="L425">		String regex = &quot;[\\&lt;]([A-Za-z0-9\\s\\,]+)[\\&gt;]&quot;;</span>
+<span class="fc" id="L426">		Pattern p = Pattern.compile(regex);</span>
+<span class="fc" id="L427">		Matcher m = p.matcher(str);</span>
+<span class="pc bpc" id="L428" title="1 of 2 branches missed.">		if (m.find()) {</span>
+<span class="fc" id="L429">			deal_read = m.group(1);</span>
+		}
+<span class="pc bpc" id="L431" title="1 of 2 branches missed.">		if (deal_read == null) {</span>
+<span class="nc" id="L432">			System.out.println(&quot;Read File Error!&quot;);</span>
+<span class="nc" id="L433">			System.exit(0);</span>
+		}
+<span class="fc" id="L435">		String[] split = deal_read.split(&quot;,&quot;);</span>
+
+<span class="fc" id="L437">		String regex_1 = &quot;[\\s]?([A-Za-z0-9]+)[\\s]?&quot;;</span>
+<span class="fc" id="L438">		Pattern p_1 = Pattern.compile(regex_1);</span>
+<span class="fc" id="L439">		String[] strList = new String[3];</span>
+
+<span class="fc bfc" id="L441" title="All 2 branches covered.">		for (int i = 0; i &lt; split.length; i++) {</span>
+<span class="fc" id="L442">			Matcher m_1 = p_1.matcher(split[i]);</span>
+<span class="pc bpc" id="L443" title="1 of 2 branches missed.">			if (m_1.find()) {</span>
+<span class="fc" id="L444">				strList[i] = m_1.group(1);</span>
+			}
+		}
+
+<span class="fc" id="L448">		name = new label(strList[0]);</span>
+<span class="fc" id="L449">		age = Integer.parseInt(strList[1], 10);</span>
+<span class="fc" id="L450">		gender = strList[2].charAt(0);</span>
+
+<span class="fc bfc" id="L452" title="All 4 branches covered.">		if (gender != 'F' &amp;&amp; gender != 'M') {</span>
+<span class="fc" id="L453">			throw new MyException(&quot;中心物体性别输入错误&quot;);</span>
+		}
+<span class="pc bpc" id="L455" title="1 of 2 branches missed.">		if (strList[2].length() != 1) {</span>
+<span class="nc" id="L456">			throw new MyException(&quot;中心物体性别输入错误&quot;);</span>
+		}
+
+<span class="fc" id="L459">		Person central = new Person(name, age, gender);</span>
+<span class="fc" id="L460">		People person = new People(name, age, gender);</span>
+<span class="fc" id="L461">		objects.add(person);</span>
+<span class="fc" id="L462">		setCentralObject(central);</span>
+
+<span class="fc" id="L464">	}</span>
+
+	private void socialTieSet(String str) throws MyException {
+
+<span class="fc" id="L468">		label name1 = null;</span>
+<span class="fc" id="L469">		label name2 = null;</span>
+<span class="fc" id="L470">		double close = 0;</span>
+
+<span class="fc" id="L472">		String deal_read = null;</span>
+
+<span class="fc" id="L474">		String regex = &quot;[\\&lt;]([\\.A-Za-z0-9\\s\\,]+)[\\&gt;]&quot;;</span>
+<span class="fc" id="L475">		Pattern p = Pattern.compile(regex);</span>
+<span class="fc" id="L476">		Matcher m = p.matcher(str);</span>
+<span class="pc bpc" id="L477" title="1 of 2 branches missed.">		if (m.find()) {</span>
+<span class="fc" id="L478">			deal_read = m.group(1);</span>
+		}
+<span class="pc bpc" id="L480" title="1 of 2 branches missed.">		if (deal_read == null) {</span>
+<span class="nc" id="L481">			System.out.println(&quot;Read File Error!&quot;);</span>
+<span class="nc" id="L482">			System.exit(0);</span>
+		}
+<span class="fc" id="L484">		String[] split = deal_read.split(&quot;,&quot;);</span>
+
+<span class="fc" id="L486">		String regex_1 = &quot;[\\s]?([\\.A-Za-z0-9]+)[\\s]?&quot;;</span>
+<span class="fc" id="L487">		Pattern p_1 = Pattern.compile(regex_1);</span>
+<span class="fc" id="L488">		String[] strList = new String[3];</span>
+
+<span class="fc bfc" id="L490" title="All 2 branches covered.">		for (int i = 0; i &lt; split.length; i++) {</span>
+<span class="fc" id="L491">			Matcher m_1 = p_1.matcher(split[i]);</span>
+<span class="pc bpc" id="L492" title="1 of 2 branches missed.">			if (m_1.find()) {</span>
+<span class="fc" id="L493">				strList[i] = m_1.group(1);</span>
+			}
+		}
+
+<span class="fc" id="L497">		name1 = new label(strList[0]);</span>
+<span class="fc" id="L498">		name2 = new label(strList[1]);</span>
+
+<span class="fc bfc" id="L500" title="All 2 branches covered.">		if (name1.equals(name2)) {</span>
+<span class="fc" id="L501">			throw new MyException(&quot;关系不能起始终止于同一个人&quot;);</span>
+		}
+
+<span class="fc" id="L504">		Boolean flagn1 = false;</span>
+<span class="fc" id="L505">		Boolean flagn2 = false;</span>
+<span class="fc" id="L506">		Boolean flagname1 = false;</span>
+<span class="fc" id="L507">		Boolean flagname2 = false;</span>
+<span class="fc bfc" id="L508" title="All 2 branches covered.">		for (int index = 0; index &lt; objects.size(); index++) {</span>
+<span class="fc bfc" id="L509" title="All 2 branches covered.">			if (objects.get(index).getName().equals(name1)) {</span>
+<span class="fc" id="L510">				flagn1 = true;</span>
+			}
+<span class="fc bfc" id="L512" title="All 2 branches covered.">			if (objects.get(index).getName().equals(name2)) {</span>
+<span class="fc" id="L513">				flagn2 = true;</span>
+			}
+		}
+<span class="fc bfc" id="L516" title="All 2 branches covered.">		if (central.getName().equals(name1)) {</span>
+<span class="fc" id="L517">			flagname1 = true;</span>
+		}
+<span class="pc bpc" id="L519" title="1 of 2 branches missed.">		if (central.getName().equals(name2)) {</span>
+<span class="nc" id="L520">			flagname2 = true;</span>
+		}
+
+<span class="pc bpc" id="L523" title="1 of 4 branches missed.">		if (!(flagn1 || flagname1)) {</span>
+<span class="fc" id="L524">			throw new MyException(&quot;依赖关系错误&quot;);</span>
+		}
+
+<span class="pc bpc" id="L527" title="1 of 4 branches missed.">		if (!(flagn2 || flagname2)) {</span>
+<span class="fc" id="L528">			throw new MyException(&quot;依赖关系错误&quot;);</span>
+		}
+
+<span class="fc" id="L531">		String deal = strList[2];</span>
+<span class="fc" id="L532">		int len = 0;</span>
+<span class="fc" id="L533">		len = deal.split(&quot;\\.&quot;)[1].length();</span>
+
+<span class="pc bpc" id="L535" title="1 of 2 branches missed.">		if (len &gt; 3) {</span>
+<span class="nc" id="L536">			throw new MyException(&quot;输入数据小数点有误&quot;);</span>
+		}
+
+<span class="fc" id="L539">		close = Double.parseDouble(strList[2]);</span>
+
+<span class="fc" id="L541">		SocialNetworkCircleTie tie = new SocialNetworkCircleTie(name1, name2, close);</span>
+<span class="fc" id="L542">		ties.add(tie);</span>
+<span class="fc" id="L543">	}</span>
+
+	private void friendSet(String str) throws MyException {
+<span class="fc" id="L546">		char gender = 'F';</span>
+<span class="fc" id="L547">		label name = null;</span>
+<span class="fc" id="L548">		int age = 0;</span>
+<span class="fc" id="L549">		String deal_read = null;</span>
+
+<span class="fc" id="L551">		String regex = &quot;[\\&lt;]([A-Za-z0-9\\s\\,]+)[\\&gt;]&quot;;</span>
+<span class="fc" id="L552">		Pattern p = Pattern.compile(regex);</span>
+<span class="fc" id="L553">		Matcher m = p.matcher(str);</span>
+<span class="pc bpc" id="L554" title="1 of 2 branches missed.">		if (m.find()) {</span>
+<span class="fc" id="L555">			deal_read = m.group(1);</span>
+		}
+<span class="pc bpc" id="L557" title="1 of 2 branches missed.">		if (deal_read == null) {</span>
+<span class="nc" id="L558">			System.out.println(&quot;Read File Error!&quot;);</span>
+<span class="nc" id="L559">			System.exit(0);</span>
+		}
+<span class="fc" id="L561">		String[] split = deal_read.split(&quot;,&quot;);</span>
+
+<span class="fc" id="L563">		String regex_1 = &quot;[\\s]?([A-Za-z0-9]+)[\\s]?&quot;;</span>
+<span class="fc" id="L564">		Pattern p_1 = Pattern.compile(regex_1);</span>
+<span class="fc" id="L565">		String[] strList = new String[3];</span>
+
+<span class="fc bfc" id="L567" title="All 2 branches covered.">		for (int i = 0; i &lt; split.length; i++) {</span>
+<span class="fc" id="L568">			Matcher m_1 = p_1.matcher(split[i]);</span>
+<span class="pc bpc" id="L569" title="1 of 2 branches missed.">			if (m_1.find()) {</span>
+<span class="fc" id="L570">				strList[i] = m_1.group(1);</span>
+			}
+		}
+
+<span class="fc" id="L574">		name = new label(strList[0]);</span>
+<span class="fc" id="L575">		age = Integer.parseInt(strList[1], 10);</span>
+<span class="fc" id="L576">		gender = strList[2].charAt(0);</span>
+
+<span class="pc bpc" id="L578" title="1 of 4 branches missed.">		if (gender != 'F' &amp;&amp; gender != 'M') {</span>
+<span class="nc" id="L579">			throw new MyException(&quot;轨道物体性别输入错误&quot;);</span>
+		}
+<span class="pc bpc" id="L581" title="1 of 2 branches missed.">		if (strList[2].length() != 1) {</span>
+<span class="nc" id="L582">			throw new MyException(&quot;轨道物体性别输入错误&quot;);</span>
+		}
+
+<span class="fc" id="L585">		People person = new People(name, age, gender);</span>
+<span class="fc" id="L586">		objects.add(person);</span>
+<span class="fc" id="L587">	}</span>
+
+	public String GUIshowResult() {
+<span class="fc" id="L590">		StringBuffer s = new StringBuffer();</span>
+<span class="fc" id="L591">		int counterTrack = 1;</span>
+<span class="fc bfc" id="L592" title="All 2 branches covered.">		while (counterTrack &lt;= numOfTracks) {</span>
+<span class="fc" id="L593">			s.append(tracks.get(counterTrack - 1).getNum() + &quot;:\t&quot;);</span>
+<span class="fc" id="L594">			Iterator&lt;Entry&lt;Track, ArrayList&lt;People&gt;&gt;&gt; iterator = rel.entrySet().iterator();</span>
+<span class="fc bfc" id="L595" title="All 2 branches covered.">			while (iterator.hasNext()) {</span>
+<span class="fc" id="L596">				Entry&lt;Track, ArrayList&lt;People&gt;&gt; it = iterator.next();</span>
+<span class="fc bfc" id="L597" title="All 2 branches covered.">				if (it.getKey().getNum() == tracks.get(counterTrack - 1).getNum()) {</span>
+<span class="fc bfc" id="L598" title="All 2 branches covered.">					for (int i = 0; i &lt; it.getValue().size(); i++) {</span>
+<span class="pc bpc" id="L599" title="1 of 2 branches missed.">						if (it.getValue().get(i).getName().toString().length() &gt; 10) {</span>
+<span class="nc" id="L600">							s.append(it.getValue().get(i).getName() + &quot;\t&quot;);</span>
+<span class="nc" id="L601">						} else {</span>
+<span class="fc" id="L602">							s.append(it.getValue().get(i).getName() + &quot;\t\t&quot;);</span>
+						}
+					}
+
+				}
+			}
+<span class="fc" id="L608">			s.append(&quot;\n&quot;);</span>
+<span class="fc" id="L609">			counterTrack++;</span>
+		}
+<span class="fc" id="L611">		return s.toString();</span>
+	}
+
+	public void showResult() {
+<span class="fc" id="L615">		int counterTrack = 1;</span>
+<span class="fc bfc" id="L616" title="All 2 branches covered.">		while (counterTrack &lt;= numOfTracks) {</span>
+<span class="fc" id="L617">			System.out.print(tracks.get(counterTrack - 1).getNum() + &quot;:\t&quot;);</span>
+<span class="fc" id="L618">			Iterator&lt;Entry&lt;Track, ArrayList&lt;People&gt;&gt;&gt; iterator = rel.entrySet().iterator();</span>
+<span class="fc bfc" id="L619" title="All 2 branches covered.">			while (iterator.hasNext()) {</span>
+<span class="fc" id="L620">				Entry&lt;Track, ArrayList&lt;People&gt;&gt; it = iterator.next();</span>
+<span class="fc bfc" id="L621" title="All 2 branches covered.">				if (it.getKey().getNum() == tracks.get(counterTrack - 1).getNum()) {</span>
+<span class="fc bfc" id="L622" title="All 2 branches covered.">					for (int i = 0; i &lt; it.getValue().size(); i++) {</span>
+<span class="fc bfc" id="L623" title="All 2 branches covered.">						if (it.getValue().get(i).getName().toString().length() &gt;= 8) {</span>
+<span class="fc" id="L624">							System.out.print(it.getValue().get(i).getName() + &quot;\t&quot;);</span>
+<span class="fc" id="L625">						} else {</span>
+<span class="fc" id="L626">							System.out.print(it.getValue().get(i).getName() + &quot;\t\t&quot;);</span>
+						}
+					}
+
+				}
+			}
+<span class="fc" id="L632">			System.out.print(&quot;\n&quot;);</span>
+<span class="fc" id="L633">			counterTrack++;</span>
+		}
+<span class="fc" id="L635">	}</span>
+
+	public String GUIremoveObjects() {
+<span class="fc" id="L638">		StringBuffer s = new StringBuffer();</span>
+<span class="fc bfc" id="L639" title="All 2 branches covered.">		for (int i = 0; i &lt; removeObjects.size(); i++) {</span>
+<span class="fc" id="L640">			s.append(removeObjects.get(i).getName().toString() + &quot;\t&quot;);</span>
+		}
+<span class="fc" id="L642">		return s.toString();</span>
+	}
+
+	private void setRelation() {
+<span class="fc bfc" id="L646" title="All 2 branches covered.">		for (int i = 0; i &lt; ties.size(); i++) {</span>
+<span class="fc" id="L647">			label name1 = ties.get(i).getName1();</span>
+<span class="fc" id="L648">			label name2 = ties.get(i).getName2();</span>
+
+<span class="pc bpc" id="L650" title="1 of 4 branches missed.">			if (getPeopleTrack(name1) &gt;= 1 &amp;&amp; getPeopleTrack(name2) &gt;= 1) {</span>
+<span class="fc" id="L651">				People p1 = getCertainFriend(name1);</span>
+<span class="fc" id="L652">				People p2 = getCertainFriend(name2);</span>
+
+<span class="fc bfc" id="L654" title="All 2 branches covered.">				if (relation.get(p1) == null) {</span>
+<span class="fc" id="L655">					List&lt;People&gt; arry = new ArrayList&lt;People&gt;();</span>
+<span class="fc" id="L656">					relation.put(p1, arry);</span>
+				}
+
+<span class="pc bpc" id="L659" title="1 of 2 branches missed.">				if (relation.get(p2) == null) {</span>
+<span class="fc" id="L660">					List&lt;People&gt; arry = new ArrayList&lt;People&gt;();</span>
+<span class="fc" id="L661">					relation.put(p2, arry);</span>
+				}
+
+<span class="fc" id="L664">				List&lt;People&gt; arry1 = relation.get(p1);</span>
+<span class="fc" id="L665">				List&lt;People&gt; arry2 = relation.get(p2);</span>
+
+<span class="fc" id="L667">				arry1.add(p2);</span>
+<span class="fc" id="L668">				arry2.add(p1);</span>
+
+<span class="fc" id="L670">				relation.put(p1, arry1);</span>
+<span class="fc" id="L671">				relation.put(p2, arry2);</span>
+			}
+		}
+<span class="fc" id="L674">	}</span>
+
+	public String GUIties() {
+<span class="fc" id="L677">		StringBuffer s = new StringBuffer();</span>
+<span class="fc bfc" id="L678" title="All 2 branches covered.">		for (int i = 0; i &lt; ties.size(); i++) {</span>
+<span class="fc" id="L679">			s.append(ties.get(i).getName1().toString() + &quot;\t\t&lt;--&gt;\t&quot; + ties.get(i).getName2().toString()</span>
+<span class="fc" id="L680">					+ &quot;\t\tclose level:&quot; + String.valueOf(ties.get(i).getClose()));</span>
+<span class="fc" id="L681">			s.append(&quot;\n&quot;);</span>
+		}
+<span class="fc" id="L683">		return s.toString();</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span>myTest (2019-5-15 16:08:01)</div></body></html>

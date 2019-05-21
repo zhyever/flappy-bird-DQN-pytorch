@@ -1,0 +1,6 @@
+Athlete ::= <1,Bolta,JAM,30,9.21> 
+Athlete ::= <Boltb,2,USA,31,10.01> 
+Athlete ::= <Boltc,3,USA,31,10.03> 
+
+Game ::= 100
+NumOfTracks ::= 5 
