@@ -22,7 +22,7 @@ import track.Track;
 
 public abstract class TrackGame extends ConcreteCircularOrbit<Sport, Athlete> {
 
-  int game;
+  public int game;
   int numOfTracks;
   // List<Athlete> athletes = new ArrayList<Athlete>();
 
@@ -290,7 +290,7 @@ public abstract class TrackGame extends ConcreteCircularOrbit<Sport, Athlete> {
     br.close();
   }
 
-  private void athleteAdd(String read) throws MyException {
+  public void athleteAdd(String read) throws MyException {
 
 
     String dealRead = null;
@@ -380,7 +380,7 @@ public abstract class TrackGame extends ConcreteCircularOrbit<Sport, Athlete> {
     this.objects.add(new Athlete(name, num, nation, age, grade));
   }
 
-  private void gameTypeSet(String read) {
+  public void gameTypeSet(String read) {
     int game = 0;
     String dealRead = null;
     String regex = "[0-9]+";
@@ -395,7 +395,7 @@ public abstract class TrackGame extends ConcreteCircularOrbit<Sport, Athlete> {
     this.game = game;
   }
 
-  private void gameTracksSet(String read) {
+  public void gameTracksSet(String read) {
     int numOfTracks = 0;
     String dealRead = null;
     String regex = "[0-9]+";

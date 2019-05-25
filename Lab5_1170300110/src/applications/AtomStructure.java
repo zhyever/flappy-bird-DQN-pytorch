@@ -21,7 +21,7 @@ import physicalobject.Electron;
 import track.Track;
 
 public class AtomStructure extends ConcreteCircularOrbit<CentralAtom, Electron> {
-  String elementName;
+  public String elementName;
   int numberOfTracks;
   int numberOfElectron;
 
@@ -360,7 +360,7 @@ public class AtomStructure extends ConcreteCircularOrbit<CentralAtom, Electron> 
     br.close();
   }
 
-  private void electronSet(String read) throws MyException {
+  public void electronSet(String read) throws MyException {
     int numberOfTracksCounter = 0;
     for (int i = 0; i < read.length(); i++) {
       if (read.charAt(i) == ';') {
@@ -404,7 +404,7 @@ public class AtomStructure extends ConcreteCircularOrbit<CentralAtom, Electron> 
 
   }
 
-  private void numberOfTracksSet(String read) throws MyException {
+  public void numberOfTracksSet(String read) throws MyException {
     String dealRead = null;
     String regex = "[0-9]+";
     Pattern p = Pattern.compile(regex);
@@ -421,7 +421,7 @@ public class AtomStructure extends ConcreteCircularOrbit<CentralAtom, Electron> 
 
   }
 
-  private void elementNameSet(String read) throws MyException {
+  public void elementNameSet(String read) throws MyException {
     String dealRead = read.split("=")[1];
     String regex = "[//s]([a-zA-Z]+)[//s]";
     Pattern p = Pattern.compile(regex);
