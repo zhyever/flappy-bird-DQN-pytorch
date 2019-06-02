@@ -72,7 +72,7 @@ public class TrackGameClient {
    */
   public static void main(String[] args) throws IOException {
     //File f = new File("src/Spring2019_HITCS_SC_Lab5-master/TrackGame.txt");
-    File f = new File("src/circularOrbit/test/TrackGame_Medium.txt");
+    File f = new File("src/circularOrbit/test/TrackGame.txt");
     TrackGameContext client = new TrackGameContext();
 
     TrackGame trackgame = new TrackGameSorted();
@@ -86,7 +86,23 @@ public class TrackGameClient {
       e.printStackTrace();
     }
     client.run(trackgame);
+
+
     client.game.showResult();
+
+    //    client.game.change(client.game.objects.get(5), client.game.objects.get(2));
+    //
+    //
+    //
+    //    //client.game.addNewTrack(new Track(10));
+    //
+    //
+    //    System.gc();
+    //
+    //    client.game.addObjectToTrack(client.game.tracks.get(5), new Athlete(new Word("LZY"), 50, "CHN", 20, 10.0));
+    //    client.game.showResult();
+
+
     write.writeStream1(client.game);
   }
 }

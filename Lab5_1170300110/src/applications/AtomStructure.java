@@ -18,6 +18,7 @@ import circularorbits.ConcreteCircularOrbit;
 import exception.MyException;
 import logging.LogTest;
 import physicalobject.Electron;
+import physicalobject.ElectronFactory;
 import track.Track;
 
 public class AtomStructure extends ConcreteCircularOrbit<CentralAtom, Electron> {
@@ -25,6 +26,7 @@ public class AtomStructure extends ConcreteCircularOrbit<CentralAtom, Electron> 
   int numberOfTracks;
   int numberOfElectron;
 
+  private ElectronFactory factory= new ElectronFactory();
   @Override
   public void addObjectToTrack(Track t, Electron object) {
     boolean flagA = false;
@@ -390,8 +392,8 @@ public class AtomStructure extends ConcreteCircularOrbit<CentralAtom, Electron> 
         int num = Integer.parseInt(m.group(2), 10);
 
         for (int i = 1; i <= num; i++) {
-          //Electron e = new Electron(counterElectron, t);
-          Electron e = new Electron(counterElectron);
+          Electron e = factory.getElectron();
+          //Electron e = new Electron(counterElectron);
           rel2.put(e, t);
 
           objects.add(e);

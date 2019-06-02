@@ -24,7 +24,7 @@ public class AtomTest {
   public void test1() throws IOException, MyException {
     File f = new File("src/circularOrbit/test/AtomicStructureDecimalElec.txt");
     test.readFile(f);
-  }
+  } 
 
   @Test(expected = MyException.class)
   public void test2() throws IOException, MyException {

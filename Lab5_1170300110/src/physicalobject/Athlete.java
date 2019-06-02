@@ -84,4 +84,5 @@ public class Athlete extends PhysicalObject {
     s.append(String.valueOf(grade));
     return s.toString();
   }
+
 }
