@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 2019-05-15 16:53:48  [ AWT-EventQueue-0:0 ] - [ INFO ]  读取src\circularOrbit\test\AtomicStructure.txt文件
 2019-05-15 16:53:48  [ AWT-EventQueue-0:4 ] - [ INFO ]  向1号轨道添加1号电子
 2019-05-15 16:53:48  [ AWT-EventQueue-0:4 ] - [ INFO ]  向1号轨道添加2号电子
@@ -710,3 +711,5 @@
 2019-05-21 18:07:58  [ AWT-EventQueue-0:7853 ] - [ INFO ]  向3号轨道添加运动员：Chen
 2019-05-21 18:07:58  [ AWT-EventQueue-0:7853 ] - [ INFO ]  向2号轨道添加运动员：Tommy
 2019-05-21 18:07:58  [ AWT-EventQueue-0:7853 ] - [ INFO ]  向4号轨道添加运动员：Coal
+=======
+>>>>>>> 32CompareIOPerformance

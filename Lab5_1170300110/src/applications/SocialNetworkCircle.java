@@ -345,7 +345,7 @@ public class SocialNetworkCircle extends ConcreteCircularOrbit<Person, People> {
 
   }
 
-  private void buildSystem() {
+  public void buildSystem() {
 
     for (int i = 0; i < ties.size(); i++) {
       Label name1 = ties.get(i).getName1();
@@ -425,7 +425,7 @@ public class SocialNetworkCircle extends ConcreteCircularOrbit<Person, People> {
     this.numOfTracks = tracks.size();
   }
 
-  private int getFriendIndex(Label name) {
+  public int getFriendIndex(Label name) {
     for (int i = 0; i < objects.size(); i++) {
       if (objects.get(i).getName().equals(name)) {
         return i;
@@ -435,7 +435,7 @@ public class SocialNetworkCircle extends ConcreteCircularOrbit<Person, People> {
     // can't get here
   }
 
-  private void centralUserSet(String str) throws MyException {
+  public void centralUserSet(String str) throws MyException {
 
     String dealRead = null;
 
@@ -484,7 +484,7 @@ public class SocialNetworkCircle extends ConcreteCircularOrbit<Person, People> {
 
   }
 
-  private void socialTieSet(String str) throws MyException {
+  public void socialTieSet(String str) throws MyException {
 
 
 
@@ -566,7 +566,7 @@ public class SocialNetworkCircle extends ConcreteCircularOrbit<Person, People> {
     ties.add(tie);
   }
 
-  private void friendSet(String str) throws MyException {
+  public void friendSet(String str) throws MyException {
 
     String dealRead = null;
 
