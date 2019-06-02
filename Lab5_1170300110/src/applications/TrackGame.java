@@ -70,6 +70,20 @@ public abstract class TrackGame extends ConcreteCircularOrbit<Sport, Athlete> {
     return null;
   }
 
+  //  private Track getTrack(Athlete ath) {
+  //    Iterator<Entry<Track, ArrayList<Athlete>>> iterator = rel.entrySet().iterator();
+  //    while (iterator.hasNext()) {
+  //      Entry<Track, ArrayList<Athlete>> it = iterator.next();
+  //      for(int i = 0; i < it.getValue().size(); i++) {
+  //        if(it.getValue().get(i).getName().equals(ath.getName())) {
+  //          return it.getKey();
+  //        }
+  //      }
+  //    }
+  //    // can't get here
+  //    return null;
+  //  }
+
   /**delTrack.
    * 删除某一条轨道(以及其上物体
    * 
