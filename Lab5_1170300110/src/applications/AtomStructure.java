@@ -3,6 +3,7 @@ package applications;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -448,6 +449,47 @@ public class AtomStructure extends ConcreteCircularOrbit<CentralAtom, Electron> 
 
     elementName = dealRead;
     setCentralObject(new CentralAtom(elementName));
+  }
+
+  public void outputWriter() {
+    try { 
+      File file =new File("src/circularOrbit/test/AtomicStructureOutput.txt");
+      //if file doesnt exists, then create it
+
+
+      if(!file.exists()){
+        file.createNewFile();
+      }
+
+      //true = append file
+      FileWriter fileWritter = new FileWriter(file ,true);
+      FileWriter fileClean = new FileWriter(file);
+
+      //flush
+      fileClean.write("");
+      fileClean.flush();
+      fileClean.close();
+
+      //write something
+      fileWritter.write("ElementName ::= " + this.elementName + "\r\n");
+      fileWritter.write("NumberOfTracks ::= " + String.valueOf(tracks.size()) + "\r\n");
+      fileWritter.write("NumberOfElectron ::= ");
+
+      for(int i = 0; i < tracks.size(); i++) {
+        if(i != tracks.size() - 1) {
+          fileWritter.write(tracks.get(i).getNum() + "/" + rel.get(tracks.get(i)).size() + ";");
+        } else {
+          fileWritter.write(tracks.get(i).getNum() + "/" + rel.get(tracks.get(i)).size());
+        }
+      }
+
+
+      fileWritter.close();
+
+
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
 
 }

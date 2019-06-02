@@ -63,6 +63,7 @@ public class AtomStructureClient {
 
     System.out.println(api.getObjectDistributionEntropy(test));
 
+    test.outputWriter();
     //Track t = new Track(6);
     //test.addNewTrack(t);
     //test.showResult();

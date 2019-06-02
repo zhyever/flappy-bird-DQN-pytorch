@@ -3,6 +3,7 @@ package applications;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -469,6 +470,43 @@ public abstract class TrackGame extends ConcreteCircularOrbit<Sport, Athlete> {
       counterTrack++;
     }
     return s.toString();
+  }
+
+  public void outputWriter() {
+    try { 
+      File file =new File("src/circularOrbit/test/TrackGameOutput.txt");
+      //if file doesnt exists, then create it
+
+
+      if(!file.exists()){
+        file.createNewFile();
+      }
+
+      //true = append file
+      FileWriter fileWritter = new FileWriter(file ,true);
+      FileWriter fileClean = new FileWriter(file);
+
+      //flush
+      fileClean.write("");
+      fileClean.flush();
+      fileClean.close();
+
+      //write something
+      fileWritter.write("Game ::= " + this.game + "\r\n");
+      fileWritter.write("NumOfTracks ::= " + String.valueOf(tracks.size()) + "\r\n");
+
+      for(int i = 0; i < objects.size(); i++) {
+        fileWritter.write("Athlete ::= <" + objects.get(i).getName().toString() + ","+ objects.get(i).getNum()+ "," 
+            + objects.get(i).getNation() + ","+ objects.get(i).getAge()+ "," + objects.get(i).getGrade()+ ">\r\n");
+      }
+
+
+      fileWritter.close();
+
+
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
 
 }

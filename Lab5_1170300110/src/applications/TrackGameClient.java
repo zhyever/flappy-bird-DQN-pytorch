@@ -61,6 +61,7 @@ public class TrackGameClient {
         new Athlete(new Word("lz"), 20, "CHN", 18, 10.01));
     client.game.change(client.game.objects.get(1), client.game.objects.get(3));
     client.game.showResult();
+    client.game.outputWriter();
 
   }
 }

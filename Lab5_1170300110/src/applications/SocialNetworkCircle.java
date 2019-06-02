@@ -3,6 +3,7 @@ package applications;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -723,4 +724,52 @@ public class SocialNetworkCircle extends ConcreteCircularOrbit<Person, People> {
     }
     return s.toString();
   }
+
+  public void outputWriter() {
+    try { 
+      File file =new File("src/circularOrbit/test/SocialNetworkCircleOutput.txt");
+      //if file doesnt exists, then create it
+
+
+      if(!file.exists()){
+        file.createNewFile();
+      }
+
+      //true = append file
+      FileWriter fileWritter = new FileWriter(file ,true);
+      FileWriter fileClean = new FileWriter(file);
+
+      //flush
+      fileClean.write("");
+      fileClean.flush();
+      fileClean.close();
+
+      //write something
+      fileWritter.write("CentralUser ::= <" + central.getName() + "," 
+          + central.getAge() + "," + central.getGender() + ">\r\n");
+
+      for(int i = 0; i < objects.size(); i++) {
+        fileWritter.write("Friend ::= <" + objects.get(i).getName() + "," 
+            + objects.get(i).getAge() + "," + objects.get(i).getGender() + ">\r\n");
+      }
+
+      for(int i = 0; i < removeObjects.size(); i++) {
+        fileWritter.write("Friend ::= <" + removeObjects.get(i).getName() + "," 
+            + removeObjects.get(i).getAge() + "," + removeObjects.get(i).getGender() + ">\r\n");
+      }
+
+      for(int i = 0; i < ties.size(); i++) {
+        fileWritter.write("SocialTie ::= <" + ties.get(i).getName1() + "," 
+            + ties.get(i).getName2() + "," + ties.get(i).getClose() + ">\r\n");
+      }
+
+
+      fileWritter.close();
+
+
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
 }

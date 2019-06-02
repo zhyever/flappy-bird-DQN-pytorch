@@ -31,6 +31,11 @@ public class Athlete extends PhysicalObject {
     setSitha(0);
   }
 
+  @Override
+  public int getNum() {
+    return num;
+  }
+
   public Word getName() {
     return name;
 

@@ -20,7 +20,7 @@ public class SocialNetworkCircleClient {
       client.readFile(f);
     } catch (MyException e) {
       e.printInfo();
-      f = new File("src/circularOrbit/test/SocialNetworkCircle_Medium.txt");
+      f = new File("src/circularOrbit/test/SocialNetworkCircle.txt");
       client = new SocialNetworkCircle();
       try {
         client.readFile(f);
@@ -43,6 +43,7 @@ public class SocialNetworkCircleClient {
     }
 
     client.showResult();
+    client.outputWriter();
     // System.out.println(client.getCloseLevel(new label("DavidChen")));
     // client.deleteTie(new label("FrankLee"), new label("TomWong"));
     // client.deleteTie(new label("FrankLee"), new label("DavidChen"));
